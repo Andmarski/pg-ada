@@ -1,0 +1,33 @@
+# GNAT build output
+build/
+*.o
+*.ali
+*.exe
+b~*.ad[sb]
+*.bexch
+auto.cgpr
+*.stderr
+*.stdout
+gpsauto.cgpr
+
+# GNAT Studio
+.gnatstudio/
+*.gps_session
+GNAT-TEMP-*
+
+# VS Code - shared configuration is in the repository, the rest stays private
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Course materials (e-learning) - kept locally, not published
+materials/
+
+# Editors / operating system
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db

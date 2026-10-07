@@ -1,0 +1,8 @@
+# Line ending normalization (Windows / Linux / macOS)
+* text=auto
+
+*.ads text
+*.adb text
+*.gpr text
+*.md  text
+*.cmd text eol=crlf

@@ -1,0 +1,17 @@
+{
+  "ada.projectFile": "dumpling_wholesale.gpr",
+
+  "[ada]": {
+    "editor.tabSize": 3,
+    "editor.insertSpaces": true,
+    "editor.rulers": [100]
+  },
+
+  "files.encoding": "utf8",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  "files.exclude": {
+    "build/objects": true
+  }
+}

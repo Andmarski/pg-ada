@@ -1,0 +1,38 @@
+--  GNAT project for the "Grandma's Dumpling Wholesale" simulation.
+--  GNAT Studio: File -> Open Project -> dumpling_wholesale.gpr
+--  Terminal:    gprbuild -p -P dumpling_wholesale.gpr   (or: gnatmake -P dumpling_wholesale.gpr)
+
+project Dumpling_Wholesale is
+
+   --  Windows always sets the environment variable OS=Windows_NT;
+   --  elsewhere it is missing, so "unix" is used.
+   type Operating_System_Kind is ("Windows_NT", "unix");
+   Operating_System : Operating_System_Kind := external ("OS", "unix");
+
+   case Operating_System is
+      when "Windows_NT" => for Source_Dirs use ("source", "source/windows");
+      when "unix"       => for Source_Dirs use ("source", "source/unix");
+   end case;
+   for Object_Dir use "build/objects";
+   for Exec_Dir use "build";
+   for Main use ("main.adb");
+   for Create_Missing_Dirs use "True";
+
+   package Builder is
+      for Executable ("main.adb") use "dumpling_wholesale";
+   end Builder;
+
+   package Compiler is
+      --  -gnat2012 : Ada 2012 standard (same code works on the lab GNAT 2021)
+      --  -gnatwa   : all useful warnings
+      --  -gnata    : assertions / Pre / Post enabled
+      --  -g        : debugger information
+      for Default_Switches ("Ada") use ("-gnat2012", "-gnatwa", "-gnata", "-g");
+   end Compiler;
+
+   package Binder is
+      --  -E : store traceback for unhandled exceptions
+      for Default_Switches ("Ada") use ("-E");
+   end Binder;
+
+end Dumpling_Wholesale;

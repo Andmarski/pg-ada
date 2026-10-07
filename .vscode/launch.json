@@ -1,0 +1,19 @@
+{
+  // F5 - build and run under the gdb debugger (included in the GNAT installation).
+  // Requires the C/C++ extension (ms-vscode.cpptools).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug dumpling_wholesale (gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/dumpling_wholesale",
+      "windows": { "program": "${workspaceFolder}/build/dumpling_wholesale.exe" },
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "externalConsole": false,
+      "preLaunchTask": "Build"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  // Ctrl+Shift+B -> "Build". Terminal -> Run Task... -> other tasks.
+  // Requires GNAT (gprbuild, gnatmake) on PATH.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "gprbuild",
+      "args": ["-p", "-P", "dumpling_wholesale.gpr"],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "clear": true },
+      "problemMatcher": {
+        "owner": "ada",
+        "source": "gnat",
+        "severity": "error",
+        "fileLocation": ["autoDetect", "${workspaceFolder}/source"],
+        "pattern": {
+          "regexp": "^(.+\\.ad[sb]):(\\d+):(\\d+): (?:(error|warning|info): )?(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "Run",
+      "type": "shell",
+      "dependsOn": "Build",
+      "command": "./build/dumpling_wholesale",
+      "windows": { "command": ".\\build\\dumpling_wholesale.exe" },
+      "group": "test",
+      "presentation": { "focus": true, "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build (gnatmake)",
+      "type": "shell",
+      "command": "gnatmake",
+      "args": ["-P", "dumpling_wholesale.gpr"],
+      "group": "build",
+      "presentation": { "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "gprclean",
+      "args": ["-r", "-P", "dumpling_wholesale.gpr"],
+      "problemMatcher": []
+    }
+  ]
+}
