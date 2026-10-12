@@ -8,6 +8,7 @@ package Warehouses is
    task Warehouse is
       --  Robot delivers goods (Module 2 -> 3)
       entry Store (Product : Product_Kind; Quantity : Positive);
+      entry Store (Product : in Product_Kind; Quantity : in Positive; Taken : out Natural);
 
       --  Current stock (Monitor, Module G)
       entry Get_Status (Current : out Stock_Array);

@@ -4,7 +4,7 @@ package body Warehouses is
 
    task body Warehouse is
       Stock : Stock_Array := (others => 0);
-
+   -- NAME : DATE_TYPE := INIT_VAL -- (others => 0) inicjalizuje pozostałe(nie wymienione) do 0
       function Total return Natural is
          Sum : Natural := 0;
       begin
@@ -22,8 +22,18 @@ package body Warehouses is
             --  TODO (Mateusz): guard on capacity, e.g.
             --     when Total < Warehouse_Capacity =>
             --  and decide what to do when Quantity does not fit.
-            accept Store (Product : Product_Kind; Quantity : Positive) do
+            when Total < Warehouse_Capacity => accept Store (Product : Product_Kind; Quantity : Positive) do
+            --depreciated function; Not to be used
                Stock (Product) := Stock (Product) + Quantity;
+            end Store;
+            Log ("Magazyn: przyjęto towar, stan " & Image (Total) & " / "
+                 & Image (Warehouse_Capacity));
+         or
+            when Total < Warehouse_Capacity => accept Store (Product : in Product_Kind; Quantity : in Positive; Taken : out Natural) do
+               if Quantity + Total <= Warehouse_Capacity then Taken := Quantity;
+               else Taken := Warehouse_Capacity - Total;
+               end if;
+               Stock (Product) := Stock (Product) + Taken;
             end Store;
             Log ("Magazyn: przyjęto towar, stan " & Image (Total) & " / "
                  & Image (Warehouse_Capacity));
