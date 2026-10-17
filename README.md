@@ -187,7 +187,7 @@ która z niego korzysta. Pliki wspólne zmieniamy tylko przez PR zaakceptowany p
 ### Beata – Moduł 2 + Moduł C
 - [x] Dyspozytor: kolejka FIFO zamiast jednego slotu (dozory `when Count < Max` / `when Count > 0`)
 - [ ] Robot: pełny cykl z zadania (otrzymał → jedzie → dostarczył → wolny), raportowanie stanu
-- [ ] Stanowisko wysyłkowe: przyjęcie, pakowanie przez określony czas, zakończenie zamówienia
+- [x] Stanowisko wysyłkowe: przyjęcie, pakowanie przez określony czas, zakończenie zamówienia
 
 ### Mateusz – Moduł 3 + Moduł A
 - [ ] Magazyn: dozór `when` na pojemność, obsługa przepełnienia, min. 3 rodzaje towarów
