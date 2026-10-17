@@ -34,6 +34,8 @@ package Common is
    Packing_Time_Minimum   : constant Duration := 1.0;
    Packing_Time_Maximum   : constant Duration := 2.0;
 
+   Dispatcher_Queue_Size : constant := 10;  --  (Bet) max number of jobs waiting for robots
+
    ------------------------------------------------------------------
    --  Products
    ------------------------------------------------------------------

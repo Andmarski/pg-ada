@@ -8,25 +8,39 @@ with Monitoring;         use Monitoring;
 package body Robots is
 
    task body Dispatcher is
-      --  TODO (Beata): replace the single slot with a bounded FIFO queue
+      --  DONE (Beata): replace the single slot with a bounded FIFO queue
       --  of e.g. 10 jobs (guards: Count < Maximum for Submit, Count > 0 for Get_Job)
-      Slot    : Cargo;
-      Has_Job : Boolean := False;
+
+      -- FIFO queue utilities
+      type Job_Queue is array (1 .. Dispatcher_Queue_Size) of Cargo;
+      Queue : Job_Queue;
+      Job_Count : Natural := 0;
+      Queue_Head : Natural := 1;
+      Queue_Tail : Natural := 1;
    begin
+
       loop
          --  SELECTIVE ACCEPT with GUARDS ("when") + terminate
          select
-            when not Has_Job =>
+            when Job_Count < Dispatcher_Queue_Size =>
                accept Submit (Job : in Cargo) do
-                  Slot := Job;
+                  Queue (Queue_Tail) := Job; -- add job to the end of the queue
+                  Logger.Log ("Dispatcher: przyjęto zlecenie D" & Image (Job.Delivery_Number) & " "
+                             & Image (Job.Quantity) & " szt. pierogów "
+                             & Product_Name (Job.Product));
                end Submit;
-               Has_Job := True;
+               Queue_Tail := (Queue_Tail  mod Dispatcher_Queue_Size) + 1;
+                  Job_Count := Job_Count + 1;
          or
-            when Has_Job =>
+            when Job_Count > 0 =>
                accept Get_Job (Job : out Cargo) do
-                  Job := Slot;
+                  Job := Queue (Queue_Head); -- get job from the front of the queue
+                  Logger.Log ("Dispatcher: przekazano zlecenie D" & Image (Job.Delivery_Number) & " "
+                             & Image (Job.Quantity) & " szt. pierogów "
+                             & Product_Name (Job.Product));
                end Get_Job;
-               Has_Job := False;
+               Job_Count := Job_Count - 1;
+               Queue_Head := (Queue_Head  mod Dispatcher_Queue_Size) + 1;
          or
             terminate;
          end select;
