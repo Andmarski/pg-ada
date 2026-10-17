@@ -17,7 +17,7 @@ package Common is
    Maximum_Delivery_Quantity : constant := 20;
    Maximum_Order_Quantity    : constant := 8;
    Dispatcher_Queue_Size : constant := 10;  --  (Bet) max number of jobs waiting for robots
-   Shipping_Station_Queue_Size : constant := 4;  --  (Bet) max number of orders cooking for shipping (gotowanie pierożków mniam)
+   Shipping_Station_Queue_Size : constant := 4;  --  (Bet) max number of orders waiting for cooking for shipping (gotowanie pierożków mniam)
 
    Simulation_Duration : constant Duration := 40.0;
    Monitor_Period      : constant Duration := 5.0;
@@ -70,6 +70,16 @@ package Common is
          when Busy => "pracuje");
 
    type Robot_State_Array is array (Robot_Number) of Robot_State;
+
+   -- (Bet) analogicznie dla stacji gotująco-pakującej jak dla robotów
+   type Stove_State is (Idle, Busy);
+
+   function Stove_State_Name (State : Stove_State) return String is
+     (case State is
+         when Idle => "wolna",
+         when Busy => "gotuje");
+
+   type Stove_State_Array is array (Stove_Number) of Stove_State;
 
    ------------------------------------------------------------------
    --  Messages exchanged between tasks

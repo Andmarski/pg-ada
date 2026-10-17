@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Logger;           use Logger;
 with Random_Utilities; use Random_Utilities;
-with Monitoring;
+with Monitoring;        use Monitoring;
 with Simulation_Control; use Simulation_Control;
 
 -- DONE (Beata): queue for packing/cooking model
@@ -70,7 +70,7 @@ package body Shipping is
 
          select
             Shipping_Station.Pass_Order (Current);
-            -- TODO (Beata/Andmarski): add call to the center monitor to report the cooking/packing state
+            Center_State.Set_Stove_State (My_Number, Busy);
 
             Log (Name & ": gotowanie zamówienia Z" & Image (Current.Number)
                  & " dla klienta K" & Image (Current.Client));
@@ -80,18 +80,19 @@ package body Shipping is
 
             Log (Name & ": zamówienie Z" & Image (Current.Number)
                  & " ugotowane, spakowane i wysłane do klienta K" & Image (Current.Client));
-            Monitoring.Center_State.Order_Completed;
+            Center_State.Order_Completed;
+            Center_State.Set_Stove_State (My_Number, Idle);
          or
             delay Retry_Timeout;
          end select;
       end loop;
       Log (Name & " kończy pracę");
-      Monitoring.Center_State.Client_Finished;
+      Center_State.Client_Finished;
 
    exception
       when Error : others =>
          Log ("Stacja gotująco-pakująca: błąd - " & Ada.Exceptions.Exception_Message (Error));
-         Monitoring.Center_State.Client_Finished;
+         Center_State.Client_Finished;
 
    end Cooking_Packing_Station;
 
