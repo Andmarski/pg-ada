@@ -30,7 +30,7 @@ package body Robots is
                              & Product_Name (Job.Product));
                end Submit;
                Queue_Tail := (Queue_Tail  mod Dispatcher_Queue_Size) + 1;
-                  Job_Count := Job_Count + 1;
+               Job_Count := Job_Count + 1;
          or
             when Job_Count > 0 =>
                accept Get_Job (Job : out Cargo) do
