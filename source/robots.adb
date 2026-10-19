@@ -74,15 +74,22 @@ package body Robots is
             delay Random_Duration (Randomness, Robot_Travel_Minimum, Robot_Travel_Maximum);
 
             Stored := False;
-            while not Stored and Control.Is_Running loop
-               select
-                  Warehouse.Store (Job.Product, Job.Quantity);
-                  Stored := True;
-               or
-                  delay Retry_Timeout;
-                  Log (Name & " czeka na miejsce w magazynie");
-               end select;
-            end loop;
+            declare
+               Amount_taken : Natural;
+            begin
+               while not Stored and Control.Is_Running loop
+                  select
+                     Warehouse.Store (Job.Product, Job.Quantity, Amount_taken);
+                     Job.Quantity := Job.Quantity - Amount_taken;
+                     if Job.Quantity = 0 then
+                        Stored := True;
+                     end if;
+                  or
+                     delay Retry_Timeout;
+                     Log (Name & " czeka na miejsce w magazynie");
+                  end select;
+               end loop;
+            end;
 
             if Stored then
                Log (Name & " dostarczył towar");
