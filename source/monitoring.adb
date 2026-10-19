@@ -13,6 +13,11 @@ package body Monitoring is
          States (Robot) := State;
       end Set_Robot_State;
 
+      procedure Set_Stove_State (Stove : Stove_Number; State : Stove_State) is
+      begin
+         S_States (Stove) := State;
+      end Set_Stove_State;
+
       procedure Delivery_Handled is
       begin
          Deliveries := Deliveries + 1;
@@ -39,6 +44,11 @@ package body Monitoring is
       begin
          return States;
       end Robot_States;
+
+      function Stove_States return Stove_State_Array is
+      begin
+         return S_States;
+      end Stove_States;
 
       function Deliveries_Handled return Natural is
       begin
@@ -74,6 +84,10 @@ package body Monitoring is
       for Robot in States'Range loop
          Append (Report, "Robot R" & Image (Robot) & ": "
                  & Robot_State_Name (States (Robot)) & Line_Feed);
+      end loop;
+      for Stove in Center_State.Stove_States'Range loop
+         Append (Report, "Stacja gotująco-pakująca S" & Image (Stove) & ": "
+                 & Stove_State_Name (Center_State.Stove_States (Stove)) & Line_Feed);
       end loop;
       Append (Report, "Dostawy obsłużone: "
               & Image (Center_State.Deliveries_Handled) & Line_Feed);

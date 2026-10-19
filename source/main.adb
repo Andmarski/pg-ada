@@ -7,7 +7,9 @@ with Simulation_Control; use Simulation_Control;
 with Deliveries;
 with Robots;
 with Orders;
+with Shipping;
 with Monitoring;
+
 
 procedure Main is
 begin
@@ -24,6 +26,10 @@ begin
 
    for Number in Customer_Number loop
       Orders.Customers (Number).Start (Number);
+   end loop;
+
+   for Number in Stove_Number loop -- (Bet) added loop to start cooking/packing stations
+      Shipping.Kitchen (Number).Start (Number);
    end loop;
 
    delay Simulation_Duration;

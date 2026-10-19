@@ -10,11 +10,14 @@ package Common is
    Truck_Count    : constant := 3;
    Robot_Count    : constant := 2;
    Customer_Count : constant := 3;
+   Stove_Count    : constant := 4;  --  (Bet) number of stoves for cooking pierogi
 
    Warehouse_Capacity        : constant := 50;  --  total dumplings in storage
    Robot_Capacity            : constant := 10;  --  maximum pieces per robot trip
    Maximum_Delivery_Quantity : constant := 20;
    Maximum_Order_Quantity    : constant := 8;
+   Dispatcher_Queue_Size : constant := 10;  --  (Bet) max number of jobs waiting for robots
+   Shipping_Station_Queue_Size : constant := 4;  --  (Bet) max number of orders waiting for cooking for shipping (gotowanie pierożków mniam)
 
    Simulation_Duration : constant Duration := 40.0;
    Monitor_Period      : constant Duration := 5.0;
@@ -33,6 +36,7 @@ package Common is
    Order_Interval_Maximum : constant Duration := 7.0;
    Packing_Time_Minimum   : constant Duration := 1.0;
    Packing_Time_Maximum   : constant Duration := 2.0;
+
 
    ------------------------------------------------------------------
    --  Products
@@ -55,6 +59,7 @@ package Common is
    subtype Truck_Number    is Positive range 1 .. Truck_Count;
    subtype Robot_Number    is Positive range 1 .. Robot_Count;
    subtype Customer_Number is Positive range 1 .. Customer_Count;
+   subtype Stove_Number    is Positive range 1 .. Stove_Count;
 
    type Robot_State is (Idle, Busy);
    --  TODO (Beata): add e.g. Charging / Broken if needed
@@ -65,6 +70,16 @@ package Common is
          when Busy => "pracuje");
 
    type Robot_State_Array is array (Robot_Number) of Robot_State;
+
+   -- (Bet) analogicznie dla stacji gotująco-pakującej jak dla robotów
+   type Stove_State is (Idle, Busy);
+
+   function Stove_State_Name (State : Stove_State) return String is
+     (case State is
+         when Idle => "wolna",
+         when Busy => "gotuje");
+
+   type Stove_State_Array is array (Stove_Number) of Stove_State;
 
    ------------------------------------------------------------------
    --  Messages exchanged between tasks
