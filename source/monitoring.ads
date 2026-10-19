@@ -10,6 +10,7 @@ package Monitoring is
    --  and never raises Tasking_Error at the end of the simulation.
    protected Center_State is
       procedure Set_Robot_State (Robot : Robot_Number; State : Robot_State);
+      procedure Set_Stove_State (Stove : Stove_Number; State : Stove_State);
       procedure Delivery_Handled;
       procedure Order_Completed;
 
@@ -21,13 +22,15 @@ package Monitoring is
       entry Wait_All_Finished;
 
       function Robot_States return Robot_State_Array;
+      function Stove_States return Stove_State_Array;
       function Deliveries_Handled return Natural;
       function Orders_Completed return Natural;
    private
       States     : Robot_State_Array := (others => Idle);
+      S_States : Stove_State_Array := (others => Idle);
       Deliveries : Natural := 0;
       Orders     : Natural := 0;
-      Active     : Natural := Truck_Count + Robot_Count + Customer_Count;
+      Active     : Natural := Truck_Count + Robot_Count + Customer_Count + Stove_Count;
    end Center_State;
 
    task Monitor;
