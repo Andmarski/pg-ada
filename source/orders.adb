@@ -13,6 +13,7 @@ package body Orders is
       Current_Order : Order;
       Order_Number  : Positive;
       Taken         : Boolean;
+      Order_Wait    : Duration;
       Shipped       : Boolean;
       Randomness    : Random_Source;
    begin
@@ -36,18 +37,21 @@ package body Orders is
               & Product_Name (Current_Order.Product));
 
          --  The order waits until the warehouse has enough product.
-         --  TODO (Mateusz): limit waiting time / cancel the order?
+         --  DONE (Mateusz): limit waiting time / cancel the order?
          Taken := False;
+         Order_Wait := 0.0;
          while not Taken and Control.Is_Running loop
             --  TIMED ENTRY CALL
             select
-               Warehouse.Try_Take (Current_Order.Product, Current_Order.Quantity, Taken);
+               Warehouse.Take (Current_Order.Product) (Current_Order.Quantity, Taken);
             or
                delay Retry_Timeout;
             end select;
 
             if not Taken then
+               exit when Order_Wait >= Order_Maximum_Wait;
                Log ("Zamówienie Z" & Image (Current_Order.Number) & " czeka na towar");
+               Order_Wait := Order_Wait + Order_Retry_Delay;
                delay Order_Retry_Delay;
             end if;
          end loop;
@@ -63,6 +67,8 @@ package body Orders is
                   delay Retry_Timeout;
                end select;
             end loop;
+            else
+            Log ("Zamówienie Z" & Image (Current_Order.Number) & " oczekiwało za długo i zostało anulowane");
          end if;
       end loop;
 

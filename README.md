@@ -190,10 +190,10 @@ która z niego korzysta. Pliki wspólne zmieniamy tylko przez PR zaakceptowany p
 - [x] Stanowisko wysyłkowe: przyjęcie, pakowanie przez określony czas, zakończenie zamówienia
 
 ### Mateusz – Moduł 3 + Moduł A
-- [ ] Magazyn: dozór `when` na pojemność, obsługa przepełnienia, min. 3 rodzaje towarów
+- [x] Magazyn: dozór `when` na pojemność, obsługa przepełnienia, min. 3 rodzaje towarów
 - [ ] Magazyn: sprawdzenie stanu (`Get_Status`)
-- [ ] Zamówienia: realizacja tylko przy wystarczającym stanie, oczekiwanie na brakujący towar
-- [ ] (opcjonalnie) rodzina entry `Take (Product_Kind)` z dozorem zamiast odpytywania
+- [x] Zamówienia: realizacja tylko przy wystarczającym stanie, oczekiwanie na brakujący towar
+- [x] (opcjonalnie) rodzina entry `Take (Product_Kind)` z dozorem zamiast odpytywania
 
 ### Wszyscy – przed oddaniem
 - [ ] 3 różne konstrukcje `select` + min. 1 dozór `when`, sensowne w scenariuszu

@@ -24,6 +24,7 @@ package Common is
    Retry_Timeout       : constant Duration := 1.0;  --  timed entry calls
    Truck_Patience      : constant Duration := 3.0;
    Order_Retry_Delay   : constant Duration := 2.0;
+   Order_Maximum_Wait  : constant Duration := 10.0;
    Shutdown_Timeout    : constant Duration := 15.0; --  maximum wait for tasks at the end
 
    Truck_Interval_Minimum : constant Duration := 2.0;
