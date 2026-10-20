@@ -31,6 +31,15 @@ package body Warehouses is
             Log ("Magazyn: przyjęto towar, stan " & Image (Total) & " / "
                  & Image (Warehouse_Capacity));
          or
+            when Total < Warehouse_Capacity => accept Store (Product : in Product_Kind; Quantity : in Positive; Taken : out Natural) do
+               if Quantity + Total <= Warehouse_Capacity then Taken := Quantity;
+               else Taken := Warehouse_Capacity - Total;
+               end if;
+               Stock (Product) := Stock (Product) + Taken;
+            end Store;
+            Log ("Magazyn: przyjęto towar, stan " & Image (Total) & " / "
+                 & Image (Warehouse_Capacity));
+         or
             accept Get_Status (Current : out Stock_Array) do
                Current := Stock;
             end Get_Status;
