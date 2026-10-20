@@ -80,9 +80,10 @@ package body Robots is
                while not Stored and Control.Is_Running loop
                   select
                      Warehouse.Store (Job.Product, Job.Quantity, Amount_taken);
-                     Job.Quantity := Job.Quantity - Amount_taken;
-                     if Job.Quantity = 0 then
+                     if Job.Quantity = Amount_taken then
                         Stored := True;
+                     else
+                        Job.Quantity := Job.Quantity - Amount_taken;
                      end if;
                   or
                      delay Retry_Timeout;
