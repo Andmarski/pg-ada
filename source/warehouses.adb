@@ -19,16 +19,9 @@ package body Warehouses is
       loop
          --  SELECTIVE ACCEPT (+ terminate)
          select
-            --  TODO (Mateusz): guard on capacity, e.g.
+            --  DONE (Mateusz): guard on capacity, e.g.
             --     when Total < Warehouse_Capacity =>
             --  and decide what to do when Quantity does not fit.
-            when Total < Warehouse_Capacity => accept Store (Product : Product_Kind; Quantity : Positive) do
-            --depreciated function; Not to be used
-               Stock (Product) := Stock (Product) + Quantity;
-            end Store;
-            Log ("Magazyn: przyjęto towar, stan " & Image (Total) & " / "
-                 & Image (Warehouse_Capacity));
-         or
             when Total < Warehouse_Capacity => accept Store (Product : in Product_Kind; Quantity : in Positive; Taken : out Natural) do
                if Quantity + Total <= Warehouse_Capacity then Taken := Quantity;
                else Taken := Warehouse_Capacity - Total;
@@ -41,20 +34,33 @@ package body Warehouses is
             accept Get_Status (Current : out Stock_Array) do
                Current := Stock;
             end Get_Status;
-         or
             --  TODO (Mateusz): consider an entry family
             --     entry Take (Product_Kind) (Quantity : Positive);
             --  with a "when Stock (Product) > 0" guard instead of polling.
-            accept Try_Take
-              (Product  : Product_Kind;
-               Quantity : Positive;
-               Success  : out Boolean)
+         or
+            when Stock(Potato_And_Cheese) > 0 => accept Take (Potato_And_Cheese) (Quantity : Positive; Success : out Boolean)
             do
-               Success := Stock (Product) >= Quantity;
+               Success := Stock (Potato_And_Cheese) >= Quantity;
                if Success then
-                  Stock (Product) := Stock (Product) - Quantity;
+                  Stock (Potato_And_Cheese) := Stock (Potato_And_Cheese) - Quantity;
                end if;
-            end Try_Take;
+            end Take;
+         or
+            when Stock(Meat) > 0 => accept Take (Meat) (Quantity : Positive; Success : out Boolean)
+            do
+               Success := Stock (Meat) >= Quantity;
+               if Success then
+                  Stock (Meat) := Stock (Meat) - Quantity;
+               end if;
+            end Take;
+         or
+            when Stock(Blueberry) > 0 => accept Take (Blueberry) (Quantity : Positive; Success : out Boolean)
+            do
+               Success := Stock (Blueberry) >= Quantity;
+               if Success then
+                  Stock (Blueberry) := Stock (Blueberry) - Quantity;
+               end if;
+            end Take;
          or
             terminate;
          end select;

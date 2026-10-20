@@ -7,7 +7,6 @@ package Warehouses is
 
    task Warehouse is
       --  Robot delivers goods (Module 2 -> 3)
-      entry Store (Product : Product_Kind; Quantity : Positive);
       entry Store (Product : in Product_Kind; Quantity : in Positive; Taken : out Natural);
 
       --  Current stock (Monitor, Module G)
@@ -15,10 +14,7 @@ package Warehouses is
 
       --  Customer order picks goods (Module A).
       --  Success = False when there is not enough of the product.
-      entry Try_Take
-        (Product  : Product_Kind;
-         Quantity : Positive;
-         Success  : out Boolean);
+      entry Take (Product_Kind) (Quantity : Positive; Success : out Boolean);
    end Warehouse;
 
 end Warehouses;
