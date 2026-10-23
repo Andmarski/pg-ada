@@ -10,19 +10,23 @@ package body Deliveries is
    --  Pass the unloaded goods to the robots.
    --  Timed entry call in a loop - never blocks forever (anti-deadlock).
    procedure Hand_Over (Unloaded : Delivery) is
-      --  TODO (Andmarski): split the delivery into loads of at most Robot_Capacity
-      Job  : constant Cargo := (Delivery_Number => Unloaded.Number,
-                                Product         => Unloaded.Product,
-                                Quantity        => Unloaded.Quantity);
-      Done : Boolean := False;
+      Remaining : Natural := Unloaded.Quantity;
+      Job       : Cargo;
    begin
-      while not Done and Control.Is_Running loop
-         select
-            Robots.Dispatcher.Submit (Job);
-            Done := True;
-         or
-            delay Retry_Timeout;
-         end select;
+      while Remaining > 0 and Control.Is_Running loop
+         Job := (Delivery_Number => Unloaded.Number,
+               Product         => Unloaded.Product,
+               Quantity        => Natural'Min (Remaining, Robot_Capacity));
+         loop
+            select
+               Robots.Dispatcher.Submit (Job);
+               exit;
+            or
+               delay Retry_Timeout;
+               exit when not Control.Is_Running;
+            end select;
+         end loop;
+         Remaining := Remaining - Job.Quantity;
       end loop;
    end Hand_Over;
 

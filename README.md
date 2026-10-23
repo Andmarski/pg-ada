@@ -179,7 +179,7 @@ która z niego korzysta. Pliki wspólne zmieniamy tylko przez PR zaakceptowany p
 
 ### Andmarski – Moduł 1 + Moduł G + integracja
 - [ ] Dostawy: losowe odstępy, identyfikator, rodzaj, liczba sztuk (jest szkielet)
-- [ ] Podział dostawy na ładunki ≤ `Robot_Capacity` (`Hand_Over`)
+- [x] Podział dostawy na ładunki ≤ `Robot_Capacity` (`Hand_Over`)
 - [ ] Komunikaty zgodne z przykładem z zadania (`Przyjazd…`, `oczekuje…`, `Rozpoczęto…`, `Zakończono…`)
 - [ ] Monitor: dopracowanie raportu (np. kolejka dyspozytora, oczekujące zamówienia)
 - [ ] `main`: kolejność startu i czyste zakończenie
