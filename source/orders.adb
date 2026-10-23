@@ -34,7 +34,7 @@ package body Orders is
          Log ("Zamówienie Z" & Image (Current_Order.Number)
               & " od klienta K" & Image (My_Number) & ": "
               & Image (Current_Order.Quantity) & " szt. pierogów "
-              & Product_Name (Current_Order.Product));
+              & Product_Name (Current_Order.Product, Genitive));
 
          --  The order waits until the warehouse has enough product.
          --  DONE (Mateusz): limit waiting time / cancel the order?

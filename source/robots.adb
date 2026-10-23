@@ -27,7 +27,7 @@ package body Robots is
                   Queue (Queue_Tail) := Job; -- add job to the end of the queue
                   Logger.Log ("Dispatcher: przyjęto zlecenie D" & Image (Job.Delivery_Number) & " "
                              & Image (Job.Quantity) & " szt. pierogów "
-                             & Product_Name (Job.Product));
+                             & Product_Name (Job.Product, Genitive));
                end Submit;
                Queue_Tail := (Queue_Tail  mod Dispatcher_Queue_Size) + 1;
                Job_Count := Job_Count + 1;
@@ -37,7 +37,7 @@ package body Robots is
                   Job := Queue (Queue_Head); -- get job from the front of the queue
                   Logger.Log ("Dispatcher: przekazano zlecenie D" & Image (Job.Delivery_Number) & " "
                              & Image (Job.Quantity) & " szt. pierogów "
-                             & Product_Name (Job.Product));
+                             & Product_Name (Job.Product, Genitive));
                end Get_Job;
                Job_Count := Job_Count - 1;
                Queue_Head := (Queue_Head  mod Dispatcher_Queue_Size) + 1;
@@ -68,7 +68,7 @@ package body Robots is
             Dispatcher.Get_Job (Job);
             Center_State.Set_Robot_State (My_Number, Busy);
             Log (Name & " otrzymał " & Image (Job.Quantity) & " szt. pierogów "
-                 & Product_Name (Job.Product)
+                 & Product_Name (Job.Product, Genitive)
                  & " (dostawa D" & Image (Job.Delivery_Number) & ")");
             Log (Name & " jedzie do magazynu");
             delay Random_Duration (Randomness, Robot_Travel_Minimum, Robot_Travel_Maximum);

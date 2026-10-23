@@ -45,11 +45,21 @@ package Common is
 
    type Product_Kind is (Potato_And_Cheese, Meat, Blueberry);
 
-   function Product_Name (Product : Product_Kind) return String is
+   --  The Polish adjective agrees with the noun:
+   --     Nominative: "Pierogi ruskie: 5"
+   --     Genitive:   "6 szt. pierogów ruskich"
+   type Grammatical_Case is (Nominative, Genitive);
+
+   function Product_Name
+     (Product : Product_Kind;
+      Form    : Grammatical_Case := Nominative) return String is
      (case Product is
-         when Potato_And_Cheese => "ruskie",
-         when Meat              => "z mięsem",
-         when Blueberry         => "z jagodami");
+         when Potato_And_Cheese =>
+           (case Form is
+               when Nominative => "ruskie",
+               when Genitive   => "ruskich"),
+         when Meat      => "z mięsem",
+         when Blueberry => "z jagodami");
 
    type Stock_Array is array (Product_Kind) of Natural;
 

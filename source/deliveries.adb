@@ -72,7 +72,7 @@ package body Deliveries is
 
          Log ("Przyjazd samochodu D" & Image (Current.Number)
               & " (kierowca nr " & Image (My_Number) & ", " & Image (Current.Quantity)
-              & " szt. pierogów " & Product_Name (Current.Product) & ")");
+              & " szt. pierogów " & Product_Name (Current.Product, Genitive) & ")");
          Log ("D" & Image (Current.Number) & " oczekuje na rozładunek");
 
          Served := False;
