@@ -9,12 +9,12 @@ package Common is
    Customer_Count : constant := 3;
    Stove_Count    : constant := 4;  --  liczba stacji gotująco-pakujących
 
-   Warehouse_Capacity        : constant := 50;  --  łączna liczba pierogów w magazynie
-   Robot_Capacity            : constant := 10;  --  maks. sztuk w jednym kursie robota
-   Maximum_Delivery_Quantity : constant := 20;
-   Maximum_Order_Quantity    : constant := 8;
-   Dispatcher_Queue_Size : constant := 10;  --  maks. zleceń czekających na robota
-   Shipping_Station_Queue_Size : constant := 4;  --  maks. zamówień czekających na gotowanie
+   Warehouse_Capacity          : constant := 50;  --  łączna liczba pierogów w magazynie
+   Robot_Capacity              : constant := 10;  --  maks. sztuk w jednym kursie robota
+   Maximum_Delivery_Quantity   : constant := 20;
+   Maximum_Order_Quantity      : constant := 8;
+   Dispatcher_Queue_Size       : constant := 10;  --  maks. zleceń czekających na robota
+   Shipping_Station_Queue_Size : constant := 4;   --  maks. zamówień czekających na gotowanie
 
    Simulation_Duration : constant Duration := 40.0;
    Monitor_Period      : constant Duration := 5.0;
