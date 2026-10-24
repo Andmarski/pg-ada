@@ -1,5 +1,4 @@
---  Grandma's Dumpling Wholesale - concurrent logistics center simulation.
---  Integration (Andmarski): starts all tasks and ends the simulation.
+--  Hurtownia Pierogów Babci - współbieżna symulacja centrum logistycznego
 
 with Common;             use Common;
 with Logger;             use Logger;
@@ -28,18 +27,17 @@ begin
       Orders.Customers (Number).Start (Number);
    end loop;
 
-   for Number in Stove_Number loop -- (Bet) added loop to start cooking/packing stations
+   for Number in Stove_Number loop
       Shipping.Kitchen (Number).Start (Number);
    end loop;
 
    delay Simulation_Duration;
 
-   --  Clients (trucks, robots, customers) finish their loops on their own;
-   --  servers leave through "or terminate" after main ends.
+   --  klienci kończą swoje pętle, serwery kończą się przez terminate
    Control.Stop;
    Log ("=== Koniec czasu symulacji - czekam na zakończenie pracy zadań ===");
 
-   --  TIMED ENTRY CALL: never wait forever, even if some task hangs
+   --  wywołanie z limitem czasu - nie czekamy w nieskończoność
    select
       Monitoring.Center_State.Wait_All_Finished;
    or

@@ -1,15 +1,13 @@
---  MODULE 2: Transport robots (Beata)
---  Dispatcher buffers transport jobs from the unloading station,
---  robots take jobs, drive and hand the goods over to the warehouse.
+--  Moduł 2: roboty transportowe i dyspozytor zleceń
 
 with Common; use Common;
 
 package Robots is
 
    task Dispatcher is
-      --  Unloading station adds a job (Module 1 -> 2)
+      --  stanowisko rozładunkowe dodaje zlecenie
       entry Submit (Job : in Cargo);
-      --  Free robot takes a job
+      --  wolny robot pobiera zlecenie
       entry Get_Job (Job : out Cargo);
    end Dispatcher;
 

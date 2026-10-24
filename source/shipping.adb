@@ -4,18 +4,13 @@ with Random_Utilities; use Random_Utilities;
 with Monitoring;        use Monitoring;
 with Simulation_Control; use Simulation_Control;
 
--- DONE (Beata): queue for packing/cooking model
--- 1. Orders go to FIFO queue waiting for cooking
--- 2. Orders are taken from the queue and packed/cooked (delay) on each stove
--- 3. Orders are sent to the customer
-
 package body Shipping is
 
    task body Shipping_Station is
       Current    : Order;
       Randomness : Random_Source;
 
-      -- FIFO queue utilities (packing/cooking queue)
+      --  kolejka FIFO zamówień w tablicy cyklicznej
       type Order_Queue is array (1 .. Shipping_Station_Queue_Size) of Order;
       Queue : Order_Queue;
       Cooking_Orders_Count : Natural := 0;
@@ -24,10 +19,12 @@ package body Shipping is
    begin
       Initialize (Randomness, Station_Seeds + 1);
       loop
+         --  selektywne przyjęcie z dozorami - pełna kolejka blokuje Ship,
+         --  pusta blokuje Pass_Order
          select
             when Cooking_Orders_Count < Shipping_Station_Queue_Size =>
                accept Ship (Current_Order : in Order) do
-                  Queue (Queue_Tail) := Current_Order; -- add order to the end of the queue
+                  Queue (Queue_Tail) := Current_Order;
                   Log ("Wysyłka: przyjęto zamówienie Z" & Image (Current_Order.Number)
                        & " dla klienta K" & Image (Current_Order.Client));
                end Ship;
@@ -37,7 +34,7 @@ package body Shipping is
          or
             when Cooking_Orders_Count > 0 =>
                accept Pass_Order (Current_Order : out Order) do
-                  Current := Queue (Queue_Head); -- get order from the front of the queue
+                  Current := Queue (Queue_Head);
                   Current_Order := Current;
                   Log ("Wysyłka: przekazano zamówienie Z" & Image (Current.Number)
                        & " dla klienta K" & Image (Current.Client) & " do stacji gotująco-pakującej");
@@ -64,10 +61,8 @@ package body Shipping is
       Initialize (Randomness, Station_Seeds + My_Number);
       Log (Name & ": gotowa do pracy");
       while Control.Is_Running loop
-         -- retry mechanism copied from Robot task:
-         --  TIMED ENTRY CALL: wait for a job at most Retry_Timeout,
-         --  then check again whether the simulation is still running.
-
+         --  wywołanie z limitem czasu - co Retry_Timeout sprawdzamy,
+         --  czy symulacja trwa
          select
             Shipping_Station.Pass_Order (Current);
             Center_State.Set_Stove_State (My_Number, Busy);
@@ -76,7 +71,6 @@ package body Shipping is
                  & " dla klienta K" & Image (Current.Client));
 
             delay Random_Duration (Randomness, Packing_Time_Minimum, Packing_Time_Maximum);
-
 
             Log (Name & ": zamówienie Z" & Image (Current.Number)
                  & " ugotowane, spakowane i wysłane do klienta K" & Image (Current.Client));

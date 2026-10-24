@@ -28,6 +28,11 @@ package body Monitoring is
          Orders := Orders + 1;
       end Order_Completed;
 
+      procedure Set_Unloading (Delivery_Number : Natural) is
+      begin
+         Unloading := Delivery_Number;
+      end Set_Unloading;
+
       procedure Client_Finished is
       begin
          if Active > 0 then
@@ -35,7 +40,7 @@ package body Monitoring is
          end if;
       end Client_Finished;
 
-      entry Wait_All_Finished when Active = 0 is
+      entry Wait_All_Finished when Active = 0 and Unloading = 0 is
       begin
          null;
       end Wait_All_Finished;
@@ -59,6 +64,11 @@ package body Monitoring is
       begin
          return Orders;
       end Orders_Completed;
+
+      function Unloading_Delivery return Natural is
+      begin
+         return Unloading;
+      end Unloading_Delivery;
    end Center_State;
 
    function Build_Report
@@ -81,6 +91,12 @@ package body Monitoring is
          Append (Report, " (magazyn zajęty - poprzedni odczyt)");
       end if;
       Append (Report, Line_Feed);
+      if Center_State.Unloading_Delivery = 0 then
+         Append (Report, "Stanowisko rozładunkowe: wolne" & Line_Feed);
+      else
+         Append (Report, "Stanowisko rozładunkowe: rozładunek D"
+                 & Image (Center_State.Unloading_Delivery) & Line_Feed);
+      end if;
       for Robot in States'Range loop
          Append (Report, "Robot R" & Image (Robot) & ": "
                  & Robot_State_Name (States (Robot)) & Line_Feed);
@@ -107,11 +123,13 @@ package body Monitoring is
       Fresh       : Boolean;
    begin
       while Control.Is_Running loop
+         --  delay until - raport co Monitor_Period bez przesuwania się w czasie
          delay until Next_Report;
-         exit when not Control.Is_Running;  --  final report is printed by main
+         exit when not Control.Is_Running;  --  raport końcowy drukuje main
          Next_Report := Next_Report + To_Time_Span (Monitor_Period);
 
-         --  CONDITIONAL ENTRY CALL: do not wait if the warehouse is busy
+         --  wywołanie warunkowe - gdy magazyn jest zajęty,
+         --  pokazujemy poprzedni odczyt
          select
             Warehouses.Warehouse.Get_Status (Stock);
             Fresh := True;
@@ -130,6 +148,7 @@ package body Monitoring is
       Stock : Stock_Array := (others => 0);
       Fresh : Boolean;
    begin
+      --  wywołanie z limitem czasu
       select
          Warehouses.Warehouse.Get_Status (Stock);
          Fresh := True;

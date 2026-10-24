@@ -1,6 +1,4 @@
---  MODULE A: Customer orders (Mateusz)
---  Customers order dumplings; an order waits until the warehouse
---  has enough of the product, then goes to the shipping station.
+--  Moduł A: zamówienia klientów
 
 with Common; use Common;
 

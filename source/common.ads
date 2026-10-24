@@ -1,31 +1,28 @@
---  Shared types and simulation parameters.
---  Changes here affect everyone - modify only through a reviewed PR.
+--  Wspólne typy i parametry symulacji
 
 package Common is
 
-   ------------------------------------------------------------------
-   --  Simulation parameters
-   ------------------------------------------------------------------
+   --  Parametry symulacji (czasy w sekundach)
 
    Truck_Count    : constant := 3;
    Robot_Count    : constant := 2;
    Customer_Count : constant := 3;
-   Stove_Count    : constant := 4;  --  (Bet) number of stoves for cooking pierogi
+   Stove_Count    : constant := 4;  --  liczba stacji gotująco-pakujących
 
-   Warehouse_Capacity        : constant := 50;  --  total dumplings in storage
-   Robot_Capacity            : constant := 10;  --  maximum pieces per robot trip
-   Maximum_Delivery_Quantity : constant := 20;
-   Maximum_Order_Quantity    : constant := 8;
-   Dispatcher_Queue_Size : constant := 10;  --  (Bet) max number of jobs waiting for robots
-   Shipping_Station_Queue_Size : constant := 4;  --  (Bet) max number of orders waiting for cooking for shipping (gotowanie pierożków mniam)
+   Warehouse_Capacity          : constant := 50;  --  łączna liczba pierogów w magazynie
+   Robot_Capacity              : constant := 10;  --  maks. sztuk w jednym kursie robota
+   Maximum_Delivery_Quantity   : constant := 20;
+   Maximum_Order_Quantity      : constant := 8;
+   Dispatcher_Queue_Size       : constant := 10;  --  maks. zleceń czekających na robota
+   Shipping_Station_Queue_Size : constant := 4;   --  maks. zamówień czekających na gotowanie
 
    Simulation_Duration : constant Duration := 40.0;
    Monitor_Period      : constant Duration := 5.0;
-   Retry_Timeout       : constant Duration := 1.0;  --  timed entry calls
-   Truck_Patience      : constant Duration := 3.0;
+   Retry_Timeout       : constant Duration := 1.0;  --  czas czekania na spotkanie przed ponowieniem
+   Truck_Patience      : constant Duration := 3.0;  --  co tyle samochód zgłasza, że nadal czeka
    Order_Retry_Delay   : constant Duration := 2.0;
-   Order_Maximum_Wait  : constant Duration := 10.0;
-   Shutdown_Timeout    : constant Duration := 15.0; --  maximum wait for tasks at the end
+   Order_Maximum_Wait  : constant Duration := 10.0; --  potem zamówienie jest anulowane
+   Shutdown_Timeout    : constant Duration := 15.0; --  maks. czas czekania main na koniec zadań
 
    Truck_Interval_Minimum : constant Duration := 2.0;
    Truck_Interval_Maximum : constant Duration := 6.0;
@@ -38,24 +35,27 @@ package Common is
    Packing_Time_Minimum   : constant Duration := 1.0;
    Packing_Time_Maximum   : constant Duration := 2.0;
 
-
-   ------------------------------------------------------------------
-   --  Products
-   ------------------------------------------------------------------
+   --  Towary
 
    type Product_Kind is (Potato_And_Cheese, Meat, Blueberry);
 
-   function Product_Name (Product : Product_Kind) return String is
+   --  odmiana nazwy: "Pierogi ruskie: 5" / "6 szt. pierogów ruskich"
+   type Grammatical_Case is (Nominative, Genitive);
+
+   function Product_Name
+     (Product : Product_Kind;
+      Form    : Grammatical_Case := Nominative) return String is
      (case Product is
-         when Potato_And_Cheese => "ruskie",
-         when Meat              => "z mięsem",
-         when Blueberry         => "z jagodami");
+         when Potato_And_Cheese =>
+           (case Form is
+               when Nominative => "ruskie",
+               when Genitive   => "ruskich"),
+         when Meat      => "z mięsem",
+         when Blueberry => "z jagodami");
 
    type Stock_Array is array (Product_Kind) of Natural;
 
-   ------------------------------------------------------------------
-   --  Numbers of the participants
-   ------------------------------------------------------------------
+   --  Numery uczestników i ich stany
 
    subtype Truck_Number    is Positive range 1 .. Truck_Count;
    subtype Robot_Number    is Positive range 1 .. Robot_Count;
@@ -63,7 +63,6 @@ package Common is
    subtype Stove_Number    is Positive range 1 .. Stove_Count;
 
    type Robot_State is (Idle, Busy);
-   --  TODO (Beata): add e.g. Charging / Broken if needed
 
    function Robot_State_Name (State : Robot_State) return String is
      (case State is
@@ -72,7 +71,6 @@ package Common is
 
    type Robot_State_Array is array (Robot_Number) of Robot_State;
 
-   -- (Bet) analogicznie dla stacji gotująco-pakującej jak dla robotów
    type Stove_State is (Idle, Busy);
 
    function Stove_State_Name (State : Stove_State) return String is
@@ -82,25 +80,23 @@ package Common is
 
    type Stove_State_Array is array (Stove_Number) of Stove_State;
 
-   ------------------------------------------------------------------
-   --  Messages exchanged between tasks
-   ------------------------------------------------------------------
+   --  Dane przekazywane w spotkaniach
 
-   --  A truck delivery (Module 1)
+   --  dostawa samochodem (moduł 1)
    type Delivery is record
       Number   : Positive     := 1;
       Product  : Product_Kind := Potato_And_Cheese;
       Quantity : Positive     := 1;
    end record;
 
-   --  A single robot load (Module 2)
+   --  jeden ładunek robota (moduł 2)
    type Cargo is record
       Delivery_Number : Positive     := 1;
       Product         : Product_Kind := Potato_And_Cheese;
       Quantity        : Positive     := 1;
    end record;
 
-   --  A customer order (Module A)
+   --  zamówienie klienta (moduł A)
    type Order is record
       Number   : Positive        := 1;
       Client   : Customer_Number := 1;

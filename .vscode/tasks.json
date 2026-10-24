@@ -1,6 +1,4 @@
 {
-  // Ctrl+Shift+B -> "Build". Terminal -> Run Task... -> other tasks.
-  // Requires GNAT (gprbuild, gnatmake) on PATH.
   "version": "2.0.0",
   "tasks": [
     {

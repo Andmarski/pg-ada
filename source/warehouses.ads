@@ -1,19 +1,17 @@
---  MODULE 3: Warehouse (Mateusz)
---  One task with its own state (stock of each dumpling kind).
+--  Moduł 3: magazyn
 
 with Common; use Common;
 
 package Warehouses is
 
    task Warehouse is
-      --  Robot delivers goods (Module 2 -> 3)
+      --  robot oddaje towar; Taken = ile sztuk magazyn przyjął
       entry Store (Product : in Product_Kind; Quantity : in Positive; Taken : out Natural);
 
-      --  Current stock (Monitor, Module G)
+      --  aktualny stan magazynu (dla monitora)
       entry Get_Status (Current : out Stock_Array);
 
-      --  Customer order picks goods (Module A).
-      --  Success = False when there is not enough of the product.
+      --  pobranie towaru do zamówienia; Success = False, gdy jest go za mało
       entry Take (Product_Kind) (Quantity : Positive; Success : out Boolean);
    end Warehouse;
 
