@@ -4,8 +4,7 @@ package body Random_Utilities is
 
    use Ada.Numerics.Float_Random;
 
-   --  Time of program start (tenths of a second since midnight):
-   --  makes every run different. Read-only, so safe to share.
+   --  czas startu programu - każde uruchomienie daje inne losowania
    Run_Seed : constant Integer :=
      Integer (Ada.Calendar.Seconds (Ada.Calendar.Clock) * 10);
 

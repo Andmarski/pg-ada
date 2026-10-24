@@ -1,4 +1,3 @@
-# Line ending normalization (Windows / Linux / macOS)
 * text=auto
 
 *.ads text

@@ -36,12 +36,11 @@ package body Orders is
               & Image (Current_Order.Quantity) & " szt. pierogów "
               & Product_Name (Current_Order.Product, Genitive));
 
-         --  The order waits until the warehouse has enough product.
-         --  DONE (Mateusz): limit waiting time / cancel the order?
+         --  zamówienie czeka na towar maks. Order_Maximum_Wait, potem jest anulowane
          Taken := False;
          Order_Wait := 0.0;
          while not Taken and Control.Is_Running loop
-            --  TIMED ENTRY CALL
+            --  wywołanie z limitem czasu
             select
                Warehouse.Take (Current_Order.Product) (Current_Order.Quantity, Taken);
             or
@@ -60,6 +59,7 @@ package body Orders is
             Log ("Zamówienie Z" & Image (Current_Order.Number) & " pobrane z magazynu");
             Shipped := False;
             while not Shipped and Control.Is_Running loop
+               --  wywołanie z limitem czasu - przy pełnej kolejce wysyłki ponawiamy
                select
                   Shipping_Station.Ship (Current_Order);
                   Shipped := True;

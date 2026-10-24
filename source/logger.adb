@@ -6,7 +6,7 @@ package body Logger is
 
    Start_Time : constant Time := Clock;
 
-   --  The only task allowed to write to the console.
+   --  tylko to zadanie pisze na konsolę, więc linie różnych zadań się nie mieszają
    task Printer is
       entry Put (Line : String);
    end Printer;
@@ -57,6 +57,6 @@ package body Logger is
    end Log;
 
 begin
-   --  Before any task can log anything (library tasks start before Main).
+   --  przed pierwszym komunikatem (zadania z pakietów startują przed Main)
    Console.Enable_Unicode_Output;
 end Logger;

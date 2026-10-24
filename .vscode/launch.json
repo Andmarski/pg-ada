@@ -1,6 +1,4 @@
 {
-  // F5 - build and run under the gdb debugger (included in the GNAT installation).
-  // Requires the C/C++ extension (ms-vscode.cpptools).
   "version": "0.2.0",
   "configurations": [
     {
