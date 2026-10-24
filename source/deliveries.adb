@@ -7,8 +7,8 @@ with Monitoring;
 
 package body Deliveries is
 
-   --  Pass the unloaded goods to the robots.
-   --  Timed entry call in a loop - never blocks forever (anti-deadlock).
+   --  Dzieli dostawę na ładunki po maks. Robot_Capacity sztuk
+   --  i przekazuje je dyspozytorowi
    procedure Hand_Over (Unloaded : Delivery) is
       Remaining : Natural := Unloaded.Quantity;
       Job       : Cargo;
@@ -18,6 +18,8 @@ package body Deliveries is
                Product         => Unloaded.Product,
                Quantity        => Natural'Min (Remaining, Robot_Capacity));
          loop
+            --  wywołanie z limitem czasu - przy pełnej kolejce ponawiamy,
+            --  dopóki trwa symulacja
             select
                Robots.Dispatcher.Submit (Job);
                exit;
@@ -36,17 +38,21 @@ package body Deliveries is
    begin
       Initialize (Randomness, Station_Seeds);
       loop
+         --  selektywne przyjęcie z terminate
          select
-            --  Keep the rendezvous short: only take over the data,
-            --  unload outside of accept (course tutorial, point 18).
+            --  w accept tylko odbiór danych, rozładunek po spotkaniu
             accept Arrive (Arriving : in Delivery) do
                Current := Arriving;
+               --  jeszcze w spotkaniu - main nie zakończy programu
+               --  w trakcie rozładunku
+               Monitoring.Center_State.Set_Unloading (Current.Number);
             end Arrive;
             Log ("Rozpoczęto rozładunek D" & Image (Current.Number));
             delay Random_Duration (Randomness, Unload_Time_Minimum, Unload_Time_Maximum);
             Log ("Zakończono rozładunek D" & Image (Current.Number));
             Monitoring.Center_State.Delivery_Handled;
             Hand_Over (Current);
+            Monitoring.Center_State.Set_Unloading (0);
          or
             terminate;
          end select;
@@ -81,7 +87,7 @@ package body Deliveries is
 
          Served := False;
          while not Served and Control.Is_Running loop
-            --  TIMED ENTRY CALL
+            --  wywołanie z limitem czasu
             select
                Unload_Station.Arrive (Current);
                Served := True;

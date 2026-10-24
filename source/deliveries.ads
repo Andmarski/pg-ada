@@ -1,6 +1,4 @@
---  MODULE 1: Deliveries and the unloading station (Andmarski)
---  Trucks from grandma arrive at random intervals with dumplings,
---  the unloading station serves them one at a time.
+--  Moduł 1: dostawy i stanowisko rozładunkowe
 
 with Common; use Common;
 

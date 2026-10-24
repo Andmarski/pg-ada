@@ -8,10 +8,7 @@ with Monitoring;         use Monitoring;
 package body Robots is
 
    task body Dispatcher is
-      --  DONE (Beata): replace the single slot with a bounded FIFO queue
-      --  of e.g. 10 jobs (guards: Count < Maximum for Submit, Count > 0 for Get_Job)
-
-      -- FIFO queue utilities
+      --  kolejka FIFO zleceń w tablicy cyklicznej
       type Job_Queue is array (1 .. Dispatcher_Queue_Size) of Cargo;
       Queue : Job_Queue;
       Job_Count : Natural := 0;
@@ -20,11 +17,12 @@ package body Robots is
    begin
 
       loop
-         --  SELECTIVE ACCEPT with GUARDS ("when") + terminate
+         --  selektywne przyjęcie z dozorami - pełna kolejka blokuje Submit,
+         --  pusta blokuje Get_Job
          select
             when Job_Count < Dispatcher_Queue_Size =>
                accept Submit (Job : in Cargo) do
-                  Queue (Queue_Tail) := Job; -- add job to the end of the queue
+                  Queue (Queue_Tail) := Job;
                   Logger.Log ("Dispatcher: przyjęto zlecenie D" & Image (Job.Delivery_Number) & " "
                              & Image (Job.Quantity) & " szt. pierogów "
                              & Product_Name (Job.Product, Genitive));
@@ -34,7 +32,7 @@ package body Robots is
          or
             when Job_Count > 0 =>
                accept Get_Job (Job : out Cargo) do
-                  Job := Queue (Queue_Head); -- get job from the front of the queue
+                  Job := Queue (Queue_Head);
                   Logger.Log ("Dispatcher: przekazano zlecenie D" & Image (Job.Delivery_Number) & " "
                              & Image (Job.Quantity) & " szt. pierogów "
                              & Product_Name (Job.Product, Genitive));
@@ -62,8 +60,8 @@ package body Robots is
       Log (Name & " gotowy do pracy");
 
       while Control.Is_Running loop
-         --  TIMED ENTRY CALL: wait for a job at most Retry_Timeout,
-         --  then check again whether the simulation is still running.
+         --  wywołanie z limitem czasu - co Retry_Timeout sprawdzamy,
+         --  czy symulacja trwa
          select
             Dispatcher.Get_Job (Job);
             Center_State.Set_Robot_State (My_Number, Busy);
@@ -78,6 +76,8 @@ package body Robots is
                Amount_taken : Natural;
             begin
                while not Stored and Control.Is_Running loop
+                  --  wywołanie z limitem czasu - magazyn może przyjąć
+                  --  tylko część ładunku, resztę oddajemy w kolejnej próbie
                   select
                      Warehouse.Store (Job.Product, Job.Quantity, Amount_taken);
                      if Job.Quantity = Amount_taken then

@@ -1,11 +1,6 @@
---  GNAT project for the "Grandma's Dumpling Wholesale" simulation.
---  GNAT Studio: File -> Open Project -> dumpling_wholesale.gpr
---  Terminal:    gprbuild -p -P dumpling_wholesale.gpr   (or: gnatmake -P dumpling_wholesale.gpr)
-
 project Dumpling_Wholesale is
 
-   --  Windows always sets the environment variable OS=Windows_NT;
-   --  elsewhere it is missing, so "unix" is used.
+   --  zmienna OS=Windows_NT istnieje tylko w Windows; wybiera wersję source/windows lub source/unix
    type Operating_System_Kind is ("Windows_NT", "unix");
    Operating_System : Operating_System_Kind := external ("OS", "unix");
 
@@ -23,15 +18,12 @@ project Dumpling_Wholesale is
    end Builder;
 
    package Compiler is
-      --  -gnat2012 : Ada 2012 standard (same code works on the lab GNAT 2021)
-      --  -gnatwa   : all useful warnings
-      --  -gnata    : assertions / Pre / Post enabled
-      --  -g        : debugger information
+      --  Ada 2012, wszystkie ostrzeżenia, asercje, informacje dla debuggera
       for Default_Switches ("Ada") use ("-gnat2012", "-gnatwa", "-gnata", "-g");
    end Compiler;
 
    package Binder is
-      --  -E : store traceback for unhandled exceptions
+      --  ślad stosu przy nieobsłużonym wyjątku
       for Default_Switches ("Ada") use ("-E");
    end Binder;
 
