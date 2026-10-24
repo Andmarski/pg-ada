@@ -178,34 +178,34 @@ która z niego korzysta. Pliki wspólne zmieniamy tylko przez PR zaakceptowany p
 ## Podział pracy
 
 ### Andmarski – Moduł 1 + Moduł G + integracja
-- [ ] Dostawy: losowe odstępy, identyfikator, rodzaj, liczba sztuk (jest szkielet)
+- [x] Dostawy: losowe odstępy, identyfikator, rodzaj, liczba sztuk
 - [x] Podział dostawy na ładunki ≤ `Robot_Capacity` (`Hand_Over`)
-- [ ] Komunikaty zgodne z przykładem z zadania (`Przyjazd…`, `oczekuje…`, `Rozpoczęto…`, `Zakończono…`)
-- [ ] Monitor: dopracowanie raportu (np. kolejka dyspozytora, oczekujące zamówienia)
-- [ ] `main`: kolejność startu i czyste zakończenie
+- [x] Komunikaty zgodne z przykładem z zadania (`Przyjazd…`, `oczekuje…`, `Rozpoczęto…`, `Zakończono…`)
+- [ ] (opcjonalnie) Monitor: więcej danych w raporcie (np. kolejka dyspozytora, oczekujące zamówienia)
+- [x] `main`: kolejność startu i czyste zakończenie
 
 ### Beata – Moduł 2 + Moduł C
 - [x] Dyspozytor: kolejka FIFO zamiast jednego slotu (dozory `when Count < Max` / `when Count > 0`)
-- [ ] Robot: pełny cykl z zadania (otrzymał → jedzie → dostarczył → wolny), raportowanie stanu
+- [x] Robot: pełny cykl z zadania (otrzymał → jedzie → dostarczył → wolny), raportowanie stanu
 - [x] Stanowisko wysyłkowe: przyjęcie, pakowanie przez określony czas, zakończenie zamówienia
 
 ### Mateusz – Moduł 3 + Moduł A
 - [x] Magazyn: dozór `when` na pojemność, obsługa przepełnienia, min. 3 rodzaje towarów
-- [ ] Magazyn: sprawdzenie stanu (`Get_Status`)
+- [x] Magazyn: sprawdzenie stanu (`Get_Status`)
 - [x] Zamówienia: realizacja tylko przy wystarczającym stanie, oczekiwanie na brakujący towar
 - [x] (opcjonalnie) rodzina entry `Take (Product_Kind)` z dozorem zamiast odpytywania
 
 ### Wszyscy – przed oddaniem
-- [ ] 3 różne konstrukcje `select` + min. 1 dozór `when`, sensowne w scenariuszu
-- [ ] Losowość i opóźnienia w każdym module
-- [ ] Brak zakleszczeń, kontrolowane zakończenie programu
-- [ ] Kompilacja bez błędów (najlepiej i bez ostrzeżeń)
+- [x] 3 różne konstrukcje `select` + min. 1 dozór `when`, sensowne w scenariuszu
+- [x] Losowość i opóźnienia w każdym module
+- [x] Brak zakleszczeń, kontrolowane zakończenie programu
+- [x] Kompilacja bez błędów (najlepiej i bez ostrzeżeń)
 
 ## Mapa wymagań → kod
 
 | Wymaganie | Gdzie |
 |---|---|
-| Selektywne przyjęcie z dozorem `when` | `Robots.Dispatcher` (+ `Warehouses.Warehouse` – TODO) |
+| Selektywne przyjęcie z dozorem `when` | `Robots.Dispatcher`, `Warehouses.Warehouse` (pojemność, rodzina `Take`) |
 | Wywołanie z limitem czasu (`or delay`) | `Truck`, `Robot`, `Customer`, `Deliveries.Hand_Over`, `main` (czekanie na koniec) |
 | Wywołanie warunkowe (`else`) | `Monitoring.Monitor` → `Warehouse.Get_Status` |
 | `or terminate` w serwerach | `Unload_Station`, `Dispatcher`, `Warehouse`, `Shipping_Station`, `Logger` |
